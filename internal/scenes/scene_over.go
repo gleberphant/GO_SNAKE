@@ -3,12 +3,12 @@ package scenes
 import rl "github.com/gen2brain/raylib-go/raylib"
 
 type Over struct {
-	Base
+	ScenePrimitive
 }
 
 func (o *Over) Load() error {
 	//configurar variaveis
-	o.Base.Load()
+	o.ScenePrimitive.Load()
 	o.sceneType = OVER
 	o.nextSceneType = MENU
 

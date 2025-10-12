@@ -1,8 +1,12 @@
-# Todo
+# Backlog
 
-[*] criar entidade de personagem
+
 [] criar entidade de comida
-[*] movimentar personagem
-[] comer comimda
+
+[*] movimentar personagem - FEITO
+
+[] comer comida
+
 [] crescer tamanho quando comer comida
+
 [] morrer quando morder o corpo

@@ -1,6 +1,7 @@
 package scenes
 
 import (
+	"container/list"
 	"fmt"
 	"go_snake/internal/entities"
 	"go_snake/internal/tiles"
@@ -9,13 +10,16 @@ import (
 )
 
 type Play struct {
-	Base
-	player entities.Entity
+	ScenePrimitive
+	player   entities.EntityChar
+	itemPool *list.List
 }
 
 func (p *Play) Load() error {
+	fmt.Println("Carregando Cena Play")
+
 	//configurar variaveis
-	p.Base.Load()
+	p.ScenePrimitive.Load()
 	p.sceneType = PLAY
 	p.nextSceneType = OVER
 
@@ -24,29 +28,43 @@ func (p *Play) Load() error {
 	p.eventHandlerFunc = p.eventHandler
 	p.drawSceneFunc = p.drawScene
 
-	// configurar entidades
+	// configurar jogador
 	p.player.Load()
-	p.player.TileX = 400 / (tiles.TSIZE)
-	p.player.TileY = 300 / (tiles.TSIZE)
+	p.player.PosX = 2 * (tiles.TSIZE)
+	p.player.PosY = 4 * (tiles.TSIZE)
 
+	// configurar itens
+	p.itemPool = list.New()
+
+	for i := 1; i < 4; i++ {
+		item := entities.EntityItem{}
+		item.Load()
+		item.PosY = 3 * (tiles.TSIZE) * int32(i)
+		item.PosX = 3 * (tiles.TSIZE)
+
+		fmt.Println("adicionando item: pos %d %d", item.PosY, item.PosX)
+
+		p.itemPool.PushFront(&item)
+	}
 	return nil
 }
 
 // gerenciar comandos
 func (p *Play) eventHandler() error {
-	p.Base.eventHandler()
+	p.ScenePrimitive.eventHandler()
 
 	// leitura de controles do jogador
-	p.player.ChangeDirection(0)
 
 	if rl.IsKeyPressed(rl.KeyA) {
 		fmt.Println("pressionado A")
-		p.player.ChangeDirection(45)
+		p.player.Control(entities.ROTATE_LEFT)
 	}
 	if rl.IsKeyPressed(rl.KeyD) {
 		fmt.Println("pressionado D")
-		p.player.ChangeDirection(-45)
+		p.player.Control(entities.ROTATE_RIGHT)
 	}
+
+	p.player.Control(entities.MOVE)
 
 	return nil
 }
@@ -54,13 +72,40 @@ func (p *Play) eventHandler() error {
 // atualizar entidades
 func (p *Play) updateEntities() error {
 
-	p.Base.updateEntities()
+	p.ScenePrimitive.updateEntities()
 
 	// atualizar personagem
-	p.player.UpdatePosition()
+	p.player.Update()
 
-	// atualizar inimigos
+	// atualizar itens
 
+	for node := p.itemPool.Front(); node != nil; node = node.Next() {
+
+		item, ok := node.Value.(*entities.EntityItem)
+
+		if !ok {
+			continue
+		}
+
+		if item.IsAlive {
+
+			// Checar Colisão
+			if rl.CheckCollisionCircles(
+				p.player.GetPositionVector(),
+				float32(p.player.Size),
+				item.GetPositionVector(),
+				float32(item.Size)) {
+
+				item.Collision(p.player)
+			}
+			item.Update()
+		} else {
+			currentNode := node.Next()
+			p.itemPool.Remove(node)
+			node = currentNode
+		}
+
+	}
 	return nil
 }
 
@@ -74,7 +119,19 @@ func (p *Play) drawScene() error {
 
 	//desenhar maptile
 
-	//desenhar entidades
+	//desenhar itens
+	for node := p.itemPool.Front(); node != nil; node = node.Next() {
+
+		item, ok := node.Value.(*entities.EntityItem)
+
+		if !ok {
+			fmt.Println("Erro do item morto")
+			continue
+		}
+
+		item.Draw()
+
+	}
 
 	//desenhar personagens
 	p.player.Draw()

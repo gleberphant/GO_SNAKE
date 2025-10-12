@@ -6,7 +6,7 @@ import (
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
-type Base struct {
+type ScenePrimitive struct {
 	sceneType     SceneEnum
 	nextSceneType SceneEnum
 
@@ -17,7 +17,7 @@ type Base struct {
 	isRunning bool
 }
 
-func (b *Base) Load() error {
+func (b *ScenePrimitive) Load() error {
 	//configurar variaveis
 	b.sceneType = INTRO
 	b.nextSceneType = MENU
@@ -32,7 +32,7 @@ func (b *Base) Load() error {
 }
 
 // LOOP DA CENA
-func (b *Base) Loop() error {
+func (b *ScenePrimitive) Loop() error {
 
 	fmt.Println(".. Iniciando loop da cena")
 
@@ -54,7 +54,7 @@ func (b *Base) Loop() error {
 
 }
 
-func (b *Base) eventHandler() error {
+func (b *ScenePrimitive) eventHandler() error {
 	// handle events
 	if rl.WindowShouldClose() {
 		b.nextSceneType = QUIT
@@ -70,22 +70,22 @@ func (b *Base) eventHandler() error {
 	return nil
 }
 
-func (b *Base) updateEntities() error {
+func (b *ScenePrimitive) updateEntities() error {
 	return nil
 }
 
-func (b *Base) drawScene() error {
+func (b *ScenePrimitive) drawScene() error {
 	return nil
 }
 
-func (b *Base) Unload() error {
+func (b *ScenePrimitive) Unload() error {
 	return nil
 }
 
-func (b *Base) NextSceneType() SceneEnum {
+func (b *ScenePrimitive) NextSceneType() SceneEnum {
 	return b.nextSceneType
 }
 
-func (b *Base) GetSceneType() SceneEnum {
+func (b *ScenePrimitive) GetSceneType() SceneEnum {
 	return b.sceneType
 }

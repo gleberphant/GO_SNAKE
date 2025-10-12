@@ -5,12 +5,12 @@ import (
 )
 
 type Menu struct {
-	Base
+	ScenePrimitive
 }
 
 func (m *Menu) Load() error {
 	//configurar variaveis
-	m.Base.Load()
+	m.ScenePrimitive.Load()
 	m.sceneType = MENU
 	m.nextSceneType = PLAY
 

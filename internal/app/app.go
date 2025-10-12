@@ -75,7 +75,7 @@ func (a *App) selectScene() scenes.Scene {
 
 	case scenes.INTRO:
 		fmt.Println("... INTRO ")
-		return new(scenes.Base)
+		return new(scenes.ScenePrimitive)
 
 	case scenes.MENU:
 		fmt.Println("... MENU ")
