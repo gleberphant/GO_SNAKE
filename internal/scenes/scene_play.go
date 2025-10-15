@@ -42,7 +42,7 @@ func (p *Play) Load() error {
 		item.PosY = 3 * (tiles.TSIZE) * int32(i)
 		item.PosX = 3 * (tiles.TSIZE)
 
-		fmt.Println("adicionando item: pos %d %d", item.PosY, item.PosX)
+		fmt.Printf("adicionando item: pos %d %d\n", item.PosY, item.PosX)
 
 		p.itemPool.PushFront(&item)
 	}
@@ -56,11 +56,11 @@ func (p *Play) eventHandler() error {
 	// leitura de controles do jogador
 
 	if rl.IsKeyPressed(rl.KeyA) {
-		fmt.Println("pressionado A")
+		//fmt.Println("pressionado A")
 		p.player.Control(entities.ROTATE_LEFT)
 	}
 	if rl.IsKeyPressed(rl.KeyD) {
-		fmt.Println("pressionado D")
+		//fmt.Println("pressionado D")
 		p.player.Control(entities.ROTATE_RIGHT)
 	}
 
@@ -79,33 +79,39 @@ func (p *Play) updateEntities() error {
 
 	// atualizar itens
 
-	for node := p.itemPool.Front(); node != nil; node = node.Next() {
+	for node := p.itemPool.Front(); node != nil; {
 
+		// verifica error
 		item, ok := node.Value.(*entities.EntityItem)
 
 		if !ok {
 			continue
 		}
 
-		if item.IsAlive {
-
-			// Checar Colisão
-			if rl.CheckCollisionCircles(
-				p.player.GetPositionVector(),
-				float32(p.player.Size),
-				item.GetPositionVector(),
-				float32(item.Size)) {
-
-				item.Collision(p.player)
-			}
-			item.Update()
-		} else {
-			currentNode := node.Next()
+		//verifica se esta morto
+		if !item.IsAlive {
+			nextNode := node.Next()
 			p.itemPool.Remove(node)
-			node = currentNode
+			node = nextNode
+			continue
 		}
 
+		// Checar Colisão
+		if rl.CheckCollisionCircles(
+			p.player.GetPositionVector(),
+			float32(p.player.Size),
+			item.GetPositionVector(),
+			float32(item.Size)) {
+
+			item.Collision(&p.player)
+		}
+
+		item.Update()
+
+		node = node.Next()
+
 	}
+
 	return nil
 }
 

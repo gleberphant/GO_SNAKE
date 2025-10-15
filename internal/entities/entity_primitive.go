@@ -1,9 +1,10 @@
 package entities
 
 import (
-	rl "github.com/gen2brain/raylib-go/raylib"
 	"go_snake/internal/tiles"
 	"math"
+
+	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 type EntityPrimitive struct {
@@ -22,7 +23,7 @@ func (e *EntityPrimitive) Load() {
 	e.PosX = 0
 	e.PosY = 0
 
-	e.Speed = tiles.TSIZE / 4
+	//	e.Speed = tiles.TSIZE / 4
 	e.Direction = 45
 
 	e.Color = rl.DarkBlue

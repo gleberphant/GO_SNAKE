@@ -2,6 +2,7 @@ package entities
 
 import (
 	"fmt"
+
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
@@ -19,9 +20,9 @@ func (e *EntityItem) Update() {
 
 }
 
-func (e *EntityItem) Collision(target EntityChar) {
+func (e *EntityItem) Collision(target *EntityChar) {
 	target.life++
 	e.IsAlive = false
-	fmt.Println("Colidiu %d", target.life)
+	fmt.Println("Comeu . Vida cresceu para %d", target.life)
 
 }

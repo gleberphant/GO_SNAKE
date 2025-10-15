@@ -1,11 +1,11 @@
 # Backlog
 
 
-[] criar entidade de comida
+[*] criar entidade de comida
 
 [*] movimentar personagem - FEITO
 
-[] comer comida
+[*] comer comida
 
 [] crescer tamanho quando comer comida
 
