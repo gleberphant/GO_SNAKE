@@ -11,7 +11,7 @@ import (
 
 type Play struct {
 	ScenePrimitive
-	player   entities.EntityChar
+	player   entities.EntitySnake
 	itemPool *list.List
 }
 
@@ -36,17 +36,21 @@ func (p *Play) Load() error {
 	// configurar itens
 	p.itemPool = list.New()
 
-	for i := 1; i < 4; i++ {
-		item := entities.EntityItem{}
-		item.Load()
-		item.PosY = 3 * (tiles.TSIZE) * int32(i)
-		item.PosX = 3 * (tiles.TSIZE)
-
-		fmt.Printf("adicionando item: pos %d %d\n", item.PosY, item.PosX)
-
-		p.itemPool.PushFront(&item)
+	for i := 1; i < 3; i++ {
+		p.generateNewItem()
 	}
 	return nil
+}
+
+func (p *Play) generateNewItem() {
+	newItem := entities.EntityFood{}
+	newItem.Load()
+	newItem.PosX = rl.GetRandomValue(50, 700)
+	newItem.PosY = rl.GetRandomValue(50, 500)
+
+	fmt.Printf("adicionando item: pos %d %d\n", newItem.PosY, newItem.PosX)
+
+	p.itemPool.PushFront(&newItem)
 }
 
 // gerenciar comandos
@@ -75,26 +79,25 @@ func (p *Play) updateEntities() error {
 	p.ScenePrimitive.updateEntities()
 
 	// atualizar personagem
-	p.player.Update()
+	if p.player.IsAlive {
+		p.player.Update()
+	} else {
+		p.isRunning = false
+		return nil
+	}
 
 	// atualizar itens
 
 	for node := p.itemPool.Front(); node != nil; {
 
 		// verifica error
-		item, ok := node.Value.(*entities.EntityItem)
+		item, ok := node.Value.(*entities.EntityFood)
 
 		if !ok {
 			continue
 		}
 
-		//verifica se esta morto
-		if !item.IsAlive {
-			nextNode := node.Next()
-			p.itemPool.Remove(node)
-			node = nextNode
-			continue
-		}
+		item.Update()
 
 		// Checar Colisão
 		if rl.CheckCollisionCircles(
@@ -104,9 +107,15 @@ func (p *Play) updateEntities() error {
 			float32(item.Size)) {
 
 			item.Collision(&p.player)
+			p.generateNewItem()
 		}
 
-		item.Update()
+		if !item.IsAlive {
+			nextNode := node.Next()
+			p.itemPool.Remove(node)
+			node = nextNode
+			continue
+		}
 
 		node = node.Next()
 
@@ -128,7 +137,7 @@ func (p *Play) drawScene() error {
 	//desenhar itens
 	for node := p.itemPool.Front(); node != nil; node = node.Next() {
 
-		item, ok := node.Value.(*entities.EntityItem)
+		item, ok := node.Value.(*entities.EntityFood)
 
 		if !ok {
 			fmt.Println("Erro do item morto")
@@ -143,7 +152,7 @@ func (p *Play) drawScene() error {
 	p.player.Draw()
 
 	//desenhar hud
-	rl.DrawText("CENAR PLAY:", 20, 100, 60, rl.White)
+	//rl.DrawText("CENAR PLAY:", 20, 100, 60, rl.White)
 	rl.EndDrawing()
 
 	return nil

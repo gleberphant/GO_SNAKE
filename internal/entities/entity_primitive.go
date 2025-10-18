@@ -19,7 +19,7 @@ type EntityPrimitive struct {
 
 func (e *EntityPrimitive) Load() {
 
-	e.Size = tiles.TSIZE / 2
+	e.Size = tiles.TSIZE/2 
 	e.PosX = 0
 	e.PosY = 0
 
@@ -39,7 +39,7 @@ func (e *EntityPrimitive) Control(action ActionEnum) {
 	case ROTATE_RIGHT:
 		e.Direction -= 45.0
 	case MOVE:
-		e.Speed = tiles.TSIZE / 4
+		e.Speed = 6
 	case STOP:
 		e.Speed = 0
 	default:
@@ -54,9 +54,11 @@ func (e *EntityPrimitive) Update() {
 
 func (e *EntityPrimitive) Move() {
 	// Atualiza Position
-	e.PosX += int32(e.Speed * math.Sin(e.Direction*rl.Deg2rad))
-	e.PosY += int32(e.Speed * math.Cos(e.Direction*rl.Deg2rad))
+	movX := int32(e.Speed * math.Sin(e.Direction*rl.Deg2rad))
+	movY := int32(e.Speed * math.Cos(e.Direction*rl.Deg2rad))
 
+	e.PosX += movX
+	e.PosY += movY
 	// Limpa Parametros das ações
 	e.Speed = 0
 
