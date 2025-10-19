@@ -19,7 +19,7 @@ type EntityPrimitive struct {
 
 func (e *EntityPrimitive) Load() {
 
-	e.Size = tiles.TSIZE/2 
+	e.Size = tiles.TSIZE / 2
 	e.PosX = 0
 	e.PosY = 0
 
@@ -35,9 +35,9 @@ func (e *EntityPrimitive) Control(action ActionEnum) {
 	// muda o angulo do movimento
 	switch action {
 	case ROTATE_LEFT:
-		e.Direction += 45.0
+		e.Direction += (45.0 * rl.Deg2rad)
 	case ROTATE_RIGHT:
-		e.Direction -= 45.0
+		e.Direction -= (45.0 * rl.Deg2rad)
 	case MOVE:
 		e.Speed = 6
 	case STOP:

@@ -45,8 +45,8 @@ func (e *EntitySnake) Update() {
 	e.oldPosX = e.PosX
 	e.oldPosY = e.PosY
 
-	e.PosX += int32(e.Speed * math.Sin(e.Direction*rl.Deg2rad))
-	e.PosY += int32(e.Speed * math.Cos(e.Direction*rl.Deg2rad))
+	e.PosX += int32(e.Speed * math.Sin(e.Direction))
+	e.PosY += int32(e.Speed * math.Cos(e.Direction))
 
 	nodeHead := e.bodyList.Front()
 
@@ -87,11 +87,12 @@ func (e *EntitySnake) Update() {
 		current.Direction = (math.Atan2(float64(target.X-current.X), float64(target.Y-current.Y)))
 
 		distance := math.Sqrt(math.Pow(float64(target.X-current.X), 2) + math.Pow(float64(target.Y-current.Y), 2))
+		current.Speed = e.Speed
 
 		if distance > (tiles.TSIZE + 10) {
-			speed := e.Speed
-			current.X += int32(speed * math.Sin(current.Direction))
-			current.Y += int32(speed * math.Cos(current.Direction))
+
+			current.X += int32(current.Speed * math.Sin(current.Direction))
+			current.Y += int32(current.Speed * math.Cos(current.Direction))
 
 		}
 		nodeHead = nodeBody
@@ -112,7 +113,10 @@ func (e *EntitySnake) Draw() {
 			continue
 		}
 
+		rl.DrawLine(body.X, body.Y, body.X+int32(32*math.Sin(body.Direction)), body.Y+int32(32*math.Cos(body.Direction)), rl.Red)
 		rl.DrawCircleLines(body.X, body.Y, float32(e.Size), rl.Blue)
+
+		rl.DrawText(fmt.Sprintf("Angulo %f", e.Direction*rl.Rad2deg), 20, 20, 14, rl.White)
 	}
 }
 
