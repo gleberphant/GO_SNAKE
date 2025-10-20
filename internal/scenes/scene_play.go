@@ -152,7 +152,7 @@ func (p *Play) drawScene() error {
 	p.player.Draw()
 
 	//desenhar hud
-	//rl.DrawText("CENAR PLAY:", 20, 100, 60, rl.White)
+	rl.DrawText("MOVER: A W S D", 20, 20, 20, rl.White)
 	rl.EndDrawing()
 
 	return nil

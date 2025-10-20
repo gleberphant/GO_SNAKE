@@ -147,7 +147,7 @@ func (e *EntitySnake) Draw() {
 
 		rl.DrawCircleLines(body.X, body.Y, float32(e.Size), rl.Blue)
 
-		rl.DrawText(fmt.Sprintf("Angulo %f", e.Direction*rl.Rad2deg), 20, 20, 14, rl.White)
+		rl.DrawText(fmt.Sprintf("Angulo %f", e.Direction*rl.Rad2deg), 20, 580, 14, rl.White)
 
 		rl.DrawLine(body.X, body.Y, prev.X, prev.Y, rl.Red)
 
