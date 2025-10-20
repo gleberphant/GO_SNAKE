@@ -10,6 +10,8 @@ import (
 type EntityPrimitive struct {
 	PosX      int32
 	PosY      int32
+	oldPosX   int32
+	oldPosY   int32
 	Size      int32
 	Direction float64
 	Speed     float64
@@ -24,7 +26,7 @@ func (e *EntityPrimitive) Load() {
 	e.PosY = 0
 
 	//	e.Speed = tiles.TSIZE / 4
-	e.Direction = 45
+	e.Direction = math.Pi / 4
 
 	e.Color = rl.DarkBlue
 	e.IsAlive = true
@@ -35,9 +37,21 @@ func (e *EntityPrimitive) Control(action ActionEnum) {
 	// muda o angulo do movimento
 	switch action {
 	case ROTATE_LEFT:
-		e.Direction += (45.0 * rl.Deg2rad)
+		e.Direction += 45 * rl.Deg2rad // math.Pi / 4  radianos
+
+		// verificar se completou o giro
+		if e.Direction > 360*rl.Deg2rad {
+			e.Direction -= 360 * rl.Deg2rad
+		}
+
 	case ROTATE_RIGHT:
-		e.Direction -= (45.0 * rl.Deg2rad)
+
+		e.Direction -= 45 * rl.Deg2rad // math.Pi / 4  radianos
+		// verificar se completou o giro
+		if e.Direction < 0 {
+			e.Direction += 360 * rl.Deg2rad
+		}
+
 	case MOVE:
 		e.Speed = 6
 	case STOP:
@@ -49,18 +63,20 @@ func (e *EntityPrimitive) Control(action ActionEnum) {
 }
 
 func (e *EntityPrimitive) Update() {
-
+	e.Move()
 }
 
 func (e *EntityPrimitive) Move() {
-	// Atualiza Position
-	movX := int32(e.Speed * math.Sin(e.Direction*rl.Deg2rad))
-	movY := int32(e.Speed * math.Cos(e.Direction*rl.Deg2rad))
+	// registra posição antiga
+	e.oldPosX = e.PosX
+	e.oldPosY = e.PosY
 
-	e.PosX += movX
-	e.PosY += movY
+	// Atualiza Position
+	e.PosX += int32(e.Speed * math.Sin(e.Direction))
+	e.PosY += int32(e.Speed * math.Cos(e.Direction))
+
 	// Limpa Parametros das ações
-	e.Speed = 0
+	//e.Speed = 0
 
 }
 
